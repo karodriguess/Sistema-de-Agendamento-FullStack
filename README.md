@@ -270,6 +270,50 @@ JWT_SECRET=sua_chave_secreta_aqui
 
 ---
 
+## CI/CD
+
+O projeto utiliza **GitHub Actions** para integração contínua. A cada push ou Pull Request direcionado à branch `main`, o pipeline executa automaticamente as verificações de qualidade.
+
+### Workflow: `ci.yml`
+
+Dois jobs rodam **em paralelo** no runner `ubuntu-latest` com Node.js 20.x:
+
+| Job        | Aplicação    | Passos executados                                                   |
+| ---------- | ------------ | ------------------------------------------------------------------- |
+| `frontend` | React + Vite | Checkout → Setup Node → `npm ci` → `npm run lint` → `npm run build` |
+| `backend`  | Next.js      | Checkout → Setup Node → `npm ci` → `npm run lint` → `npm run build` |
+
+### O que cada etapa faz
+
+- **Checkout** — clona o repositório no runner do GitHub
+- **Setup Node.js 20** — instala Node.js 20.x LTS e habilita cache do `node_modules`
+- **`npm ci`** — instalação reproduzível baseada no `package-lock.json` (mais rápida e determinística que `npm install`)
+- **`npm run lint`** — ESLint valida estilo de código e boas práticas (TypeScript, React Hooks, etc.)
+- **`npm run build`**:
+  - Frontend: `tsc -b` (verificação de tipos) + `vite build` (bundle de produção)
+  - Backend: `next build` (compilação TypeScript + otimização do Next.js)
+
+### O que acontece ao fazer push ou abrir um PR
+
+1. O GitHub detecta o evento e aciona o workflow automaticamente
+2. Os dois jobs iniciam **simultaneamente** em máquinas separadas
+3. Se qualquer etapa falhar, o job é marcado como ❌ e os passos seguintes são cancelados
+4. O status aparece na aba **Actions** do repositório e diretamente no PR (como check obrigatório)
+5. Só é possível fazer merge no PR se ambos os jobs estiverem ✅
+
+### Verificações visíveis na aba Actions
+
+| Nome do check             | O que representa               |
+| ------------------------- | ------------------------------ |
+| `Frontend (React + Vite)` | Lint + build do app React/Vite |
+| `Backend (Next.js)`       | Lint + build da API Next.js    |
+
+### Status do CI em tempo real:
+
+```markdown
+![CI](https://github.com/karodriguess/Agendamento/actions/workflows/ci.yml/badge.svg)
+```
+
 ## Status do Projeto
 
 > Em desenvolvimento — novas funcionalidades sendo adicionadas continuamente.
