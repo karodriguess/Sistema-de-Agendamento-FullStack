@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { Sidebar } from "../../components/Sidebar";
 
@@ -24,15 +24,15 @@ export function Profissionais() {
 
   const [editingId, setEditingId] = useState<string | null>(null);
 
-  async function loadProfissionais() {
+  const loadProfissionais = useCallback(async () => {
     const data = await getProfissionais();
 
     setProfissionais(data);
-  }
+  }, []);
 
   useEffect(() => {
     loadProfissionais();
-  }, []);
+  }, [loadProfissionais]);
 
   async function handleCreate(e: React.FormEvent) {
     e.preventDefault();
