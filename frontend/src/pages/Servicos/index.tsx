@@ -2,7 +2,12 @@ import { useEffect, useState } from "react";
 
 import { Sidebar } from "../../components/Sidebar";
 
-import { getServicos, createServico } from "../../services/servicos";
+import {
+  getServicos,
+  createServico,
+  updateServico,
+  deleteServico,
+} from "../../services/servicos";
 
 interface Servico {
   _id: string;
@@ -20,10 +25,31 @@ export function Servicos() {
   const [duracao, setDuracao] = useState("");
   const [preco, setPreco] = useState("");
 
+  const [editingId, setEditingId] = useState<string | null>(null);
+
   async function loadServicos() {
     const data = await getServicos();
 
     setServicos(data);
+  }
+
+  function handleEdit(servico: Servico) {
+    setEditingId(servico._id);
+
+    setNome(servico.nome);
+    setDescricao(servico.descricao);
+    setDuracao(String(servico.duracao));
+    setPreco(String(servico.preco));
+  }
+
+  async function handleDelete(id: string) {
+    if (!confirm("Deseja excluir este serviço?")) {
+      return;
+    }
+
+    await deleteServico(id);
+
+    loadServicos();
   }
 
   useEffect(() => {
@@ -33,12 +59,23 @@ export function Servicos() {
   async function handleCreate(e: React.FormEvent) {
     e.preventDefault();
 
-    await createServico({
-      nome,
-      descricao,
-      duracao: Number(duracao),
-      preco: Number(preco),
-    });
+    if (editingId) {
+      await updateServico(editingId, {
+        nome,
+        descricao,
+        duracao: Number(duracao),
+        preco: Number(preco),
+      });
+
+      setEditingId(null);
+    } else {
+      await createServico({
+        nome,
+        descricao,
+        duracao: Number(duracao),
+        preco: Number(preco),
+      });
+    }
 
     setNome("");
     setDescricao("");
@@ -89,7 +126,7 @@ export function Servicos() {
           />
 
           <button type="submit" className="bg-blue-600 text-white px-4 rounded">
-            Salvar
+            {editingId ? "Atualizar" : "Salvar"}
           </button>
         </form>
 
@@ -100,6 +137,7 @@ export function Servicos() {
               <th>Nome</th>
               <th>Duração</th>
               <th>Preço</th>
+              <th>Ações</th>
             </tr>
           </thead>
 
@@ -110,6 +148,22 @@ export function Servicos() {
                 <td>{servico.nome}</td>
                 <td>{servico.duracao}</td>
                 <td>R$ {servico.preco}</td>
+
+                <td>
+                  <button
+                    onClick={() => handleEdit(servico)}
+                    className="text-blue-500 mr-4"
+                  >
+                    Editar
+                  </button>
+
+                  <button
+                    onClick={() => handleDelete(servico._id)}
+                    className="text-red-500"
+                  >
+                    Excluir
+                  </button>
+                </td>
               </tr>
             ))}
           </tbody>
