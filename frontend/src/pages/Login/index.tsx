@@ -14,6 +14,7 @@ export function Login() {
     e.preventDefault();
 
     try {
+      console.log("BOTÃO CLICADO");
       await signIn(email, senha);
       navigate("/dashboard");
     } catch {
@@ -23,7 +24,10 @@ export function Login() {
 
   return (
     <div className="min-h-screen bg-[#f0f4f9] flex items-center justify-center p-4">
-      <div className="w-full max-w-5xl bg-white rounded-[28px] shadow-sm overflow-hidden grid md:grid-cols-2">
+      <div
+        className="w
+      -full max-w-5xl bg-white rounded-[28px] shadow-sm overflow-hidden grid md:grid-cols-2"
+      >
         {/* Lado Esquerdo */}
         <div className="p-10 md:p-14 flex flex-col justify-between">
           <div>
