@@ -10,7 +10,7 @@ interface User {
 interface AuthContextData {
   user: User | null;
   token: string | null;
-  signIn: (email: string, senha: string) => Promise<void>;
+  signIn: (email: string, senha: string) => Promise<User>;
   signOut: () => void;
   loading: boolean;
 }
@@ -55,6 +55,8 @@ export function AuthProvider({ children }: Props) {
 
     setToken(token);
     setUser(usuario);
+
+    return usuario;
   }
 
   function signOut() {

@@ -14,9 +14,14 @@ export function Login() {
     e.preventDefault();
 
     try {
-      console.log("BOTÃO CLICADO");
       await signIn(email, senha);
-      navigate("/dashboard");
+      const usuario = await signIn(email, senha);
+
+      if (usuario.perfil === "admin") {
+        navigate("/dashboard");
+      } else {
+        navigate("/meus-agendamentos");
+      }
     } catch {
       alert("Email ou senha inválidos");
     }
@@ -46,7 +51,12 @@ export function Login() {
             </p>
           </div>
 
-          <p className="text-sm text-gray-500 mt-10">Sistema de Agendamento</p>
+          <p className="text-sm text-gray-700 mt-4">
+            Não possui conta?{" "}
+            <a href="/cadastro" className="text-blue-700">
+              Criar conta
+            </a>
+          </p>
         </div>
 
         {/* Lado Direito */}

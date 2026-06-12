@@ -1,6 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 
 import { Login } from "../pages/Login";
+import { Cadastro } from "../pages/Cadastro";
 import { Dashboard } from "../pages/Dashboard";
 import { Profissionais } from "../pages/Profissionais";
 import { Servicos } from "../pages/Servicos";
@@ -12,6 +13,8 @@ export function AppRoutes() {
   return (
     <Routes>
       <Route path="/" element={<Login />} />
+
+      <Route path="/cadastro" element={<Cadastro />} />
 
       <Route
         path="/dashboard"
@@ -31,11 +34,32 @@ export function AppRoutes() {
         }
       />
 
-      <Route path="/servicos" element={<Servicos />} />
+      <Route
+        path="/servicos"
+        element={
+          <ProtectedRoute>
+            <Servicos />
+          </ProtectedRoute>
+        }
+      />
 
-      <Route path="/agendamentos" element={<Agendamentos />} />
+      <Route
+        path="/agendamentos"
+        element={
+          <ProtectedRoute>
+            <Agendamentos />
+          </ProtectedRoute>
+        }
+      />
 
-      <Route path="/meus-agendamentos" element={<MeusAgendamentos />} />
+      <Route
+        path="/meus-agendamentos"
+        element={
+          <ProtectedRoute>
+            <MeusAgendamentos />
+          </ProtectedRoute>
+        }
+      />
     </Routes>
   );
 }
