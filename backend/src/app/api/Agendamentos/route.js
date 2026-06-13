@@ -78,7 +78,7 @@ export async function GET() {
     await connectDB();
 
     const agendamentos = await Agendamento.find()
-      .populate("clienteId", "nome email perfil")
+      .populate("clienteId", "nome email telefone")
       .populate("profissionalId", "nome especialidade")
       .populate("servicoId", "nome preco duracao")
       .sort({ createdAt: -1 });

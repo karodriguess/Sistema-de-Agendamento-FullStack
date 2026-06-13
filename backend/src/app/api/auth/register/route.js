@@ -23,6 +23,7 @@ export async function POST(req) {
     const usuario = await User.create({
       nome: body.nome,
       email: body.email,
+      telefone: body.telefone,
       senha: senhaHash,
       perfil: body.perfil || "cliente",
     });

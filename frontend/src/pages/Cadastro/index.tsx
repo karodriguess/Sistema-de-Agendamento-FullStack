@@ -8,6 +8,7 @@ export function Cadastro() {
 
   const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
+  const [telefone, setTelefone] = useState("");
   const [senha, setSenha] = useState("");
 
   async function handleRegister(e: React.FormEvent) {
@@ -17,6 +18,7 @@ export function Cadastro() {
       await api.post("/auth/register", {
         nome,
         email,
+        telefone,
         senha,
       });
 
@@ -47,6 +49,14 @@ export function Cadastro() {
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            className="w-full border rounded p-3"
+          />
+
+          <input
+            type="tel"
+            placeholder="Telefone (ex: 11999999999)"
+            value={telefone}
+            onChange={(e) => setTelefone(e.target.value)}
             className="w-full border rounded p-3"
           />
 
