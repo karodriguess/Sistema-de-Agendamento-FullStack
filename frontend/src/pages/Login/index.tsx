@@ -53,7 +53,18 @@ export function Login() {
 
           <p className="text-sm text-gray-700 mt-4">
             Não possui conta?{" "}
-            <a href="/cadastro" className="text-blue-700">
+            <a
+              href="/cadastro"
+              className="text-blue-700 relative
+    after:absolute
+    after:left-0
+    after:bottom-0
+    after:h-[1px]
+    after:w-0
+    after:bg-slate-900
+    after:duration-200
+    hover:after:w-full hover:text-slate-900"
+            >
               Criar conta
             </a>
           </p>
@@ -75,10 +86,8 @@ export function Login() {
                   rounded-md
                   px-4
                   py-4
-                  outline-none
-                  focus:border-blue-500
-                  focus:ring-1
-                  focus:ring-blue-500
+                  outline-none                
+                   focus:outline-none
                 "
               />
             </div>
@@ -97,9 +106,7 @@ export function Login() {
                   px-4
                   py-4
                   outline-none
-                  focus:border-blue-500
-                  focus:ring-1
-                  focus:ring-blue-500
+                   focus:outline-none
                 "
               />
             </div>
@@ -108,14 +115,13 @@ export function Login() {
               <button
                 type="submit"
                 className="
-                  bg-blue-600
-                  hover:bg-blue-700
-                  transition
+                  bg-slate-900
                   text-white
                   px-8
                   py-3
                   rounded-full
                   font-medium
+                  cursor-pointer
                 "
               >
                 Entrar
