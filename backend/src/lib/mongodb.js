@@ -24,8 +24,8 @@ export async function connectDB() {
       console.log("Tentando conectar ao MongoDB...");
 
       cached.promise = mongoose.connect(MONGODB_URI, {
-        serverSelectionTimeoutMS: 5000,
-        socketTimeoutMS: 10000,
+        serverSelectionTimeoutMS: 30000,
+        socketTimeoutMS: 45000,
       });
     }
 
@@ -35,6 +35,7 @@ export async function connectDB() {
 
     return cached.conn;
   } catch (error) {
+    cached.promise = null;
     console.error("🔴 Erro MongoDB:", error);
 
     throw error;
