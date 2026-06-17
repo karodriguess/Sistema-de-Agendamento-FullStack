@@ -7,8 +7,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint .",
-    "banco": "nodemon mongodb.js"
+    "lint": "next eslint ."
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
