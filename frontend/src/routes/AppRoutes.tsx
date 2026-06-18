@@ -7,6 +7,7 @@ import { Profissionais } from "../pages/Profissionais";
 import { Servicos } from "../pages/Servicos";
 import { Agendamentos } from "../pages/Agendamentos";
 import { MeusAgendamentos } from "../pages/MeusAgendamentos";
+import { Disponibilidades } from "../pages/Disponibilidades";
 import { ProtectedRoute } from "../components/ProtectedRoute";
 
 export function AppRoutes() {
@@ -57,6 +58,15 @@ export function AppRoutes() {
         element={
           <ProtectedRoute>
             <MeusAgendamentos />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/disponibilidades"
+        element={
+          <ProtectedRoute>
+            <Disponibilidades />
           </ProtectedRoute>
         }
       />
