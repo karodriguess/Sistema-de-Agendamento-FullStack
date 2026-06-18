@@ -79,11 +79,14 @@ export function Servicos() {
         <p className="text-xs text-slate-400 mb-1">Pages / Serviços</p>
         <h1 className="text-2xl font-bold text-slate-800 mb-8">Serviços</h1>
 
-        <form onSubmit={handleCreate} className="bg-white rounded-xl shadow-sm p-6 mb-8">
+        <form
+          onSubmit={handleCreate}
+          className="bg-white rounded-xl shadow-sm p-6 mb-8"
+        >
           <h2 className="text-sm font-semibold text-slate-600 uppercase tracking-wide mb-4">
             {editingId ? "Editar Serviço" : "Novo Serviço"}
           </h2>
-          <div className="grid md:grid-cols-2 gap-4">
+          <div className="grid md:grid-cols-3 gap-4">
             <input
               type="text"
               placeholder="Nome"
@@ -91,13 +94,7 @@ export function Servicos() {
               onChange={(e) => setNome(e.target.value)}
               className="w-full border border-slate-200 rounded-lg px-4 py-2.5 text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-300"
             />
-            <input
-              type="text"
-              placeholder="Descrição"
-              value={descricao}
-              onChange={(e) => setDescricao(e.target.value)}
-              className="w-full border border-slate-200 rounded-lg px-4 py-2.5 text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-300"
-            />
+
             <input
               type="number"
               placeholder="Duração (min)"
@@ -115,7 +112,7 @@ export function Servicos() {
           </div>
           <button
             type="submit"
-            className="mt-4 bg-slate-800 hover:bg-slate-900 text-white text-sm font-medium px-6 py-2.5 rounded-lg transition-colors"
+            className="mt-4 bg-slate-800 hover:bg-slate-900 text-white text-sm font-medium px-6 py-2.5 rounded-lg transition-colors cursor-pointer"
           >
             {editingId ? "Atualizar" : "Salvar"}
           </button>
@@ -125,29 +122,46 @@ export function Servicos() {
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-slate-100 bg-slate-50">
-                <th className="text-left px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">Nome</th>
-                <th className="text-left px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">Duração</th>
-                <th className="text-left px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">Preço</th>
-                <th className="text-left px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">Ações</th>
+                <th className="text-left px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">
+                  Nome
+                </th>
+                <th className="text-left px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">
+                  Duração
+                </th>
+                <th className="text-left px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">
+                  Preço
+                </th>
+                <th className="text-left px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">
+                  Ações
+                </th>
               </tr>
             </thead>
             <tbody>
               {servicos.map((servico) => (
-                <tr key={servico._id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
-                  <td className="px-6 py-4 text-slate-700 font-medium">{servico.nome}</td>
-                  <td className="px-6 py-4 text-slate-500">{servico.duracao} min</td>
-                  <td className="px-6 py-4 text-slate-500">R$ {servico.preco}</td>
+                <tr
+                  key={servico._id}
+                  className="border-b border-slate-100 hover:bg-slate-50 transition-colors"
+                >
+                  <td className="px-6 py-4 text-slate-700 font-medium">
+                    {servico.nome}
+                  </td>
+                  <td className="px-6 py-4 text-slate-500">
+                    {servico.duracao} min
+                  </td>
+                  <td className="px-6 py-4 text-slate-500">
+                    R$ {servico.preco}
+                  </td>
                   <td className="px-6 py-4">
                     <div className="flex gap-3">
                       <button
                         onClick={() => handleEdit(servico)}
-                        className="text-xs font-medium text-slate-600 hover:text-slate-900 transition-colors"
+                        className="text-xs font-medium text-slate-600 hover:text-slate-900 transition-colors cursor-pointer"
                       >
                         Editar
                       </button>
                       <button
                         onClick={() => handleDelete(servico._id)}
-                        className="text-xs font-medium text-red-400 hover:text-red-600 transition-colors"
+                        className="text-xs font-medium text-red-400 hover:text-red-600 transition-colors cursor-pointer"
                       >
                         Excluir
                       </button>
