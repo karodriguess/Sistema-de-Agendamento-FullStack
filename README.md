@@ -324,9 +324,9 @@ Dois jobs rodam **em paralelo** no runner `ubuntu-latest` com Node.js 20.x:
 | Dashboard administrativo         | Concluído          |
 | Gerenciamento de Profissionais   | Concluído          |
 | Gerenciamento de Serviços        | Concluído          |
-| Agendamentos (listagem admin)    | Em desenvolvimento |
-| Meus Agendamentos (cliente)      | Em desenvolvimento |
-| Disponibilidade de Profissionais | Em desenvolvimento |
+| Agendamentos (listagem admin)    | Concluído |
+| Disponibilidades                 | Concluído |
+| Meus Agendamento (Cliente)       | Em desenvolvimento|
 
 ---
 
