@@ -1,14 +1,26 @@
 import { connectDB } from "../../../lib/mongodb";
 import Agendamento from "../../../models/Agendamento";
+import jwt from "jsonwebtoken";
 
 export async function POST(req) {
   try {
     await connectDB();
 
+    const authHeader = req.headers.get("authorization");
+    if (!authHeader) {
+      return Response.json({ error: "Token não enviado" }, { status: 401 });
+    }
+    const token = authHeader.split(" ")[1];
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
     const body = await req.json();
 
+    const clienteId =
+      decoded.perfil === "admin" && body.clienteId
+        ? body.clienteId
+        : decoded.id;
+
     if (
-      !body.clienteId ||
       !body.profissionalId ||
       !body.servicoId ||
       !body.data ||
@@ -43,7 +55,7 @@ export async function POST(req) {
         }
       );
     }
-    const clienteId = req.headers.get("x-user-id");
+
     const agendamento = await Agendamento.create({
       clienteId,
       profissionalId: body.profissionalId,

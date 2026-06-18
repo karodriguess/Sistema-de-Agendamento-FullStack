@@ -43,5 +43,6 @@ export const config = {
     "/api/profissionais/:path*",
     "/api/servicos/:path*",
     "/api/dashboard/:path*",
+    "/api/disponibilidades/:path*",
   ],
 };
