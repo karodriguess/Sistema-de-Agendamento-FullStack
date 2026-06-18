@@ -34,7 +34,8 @@ export async function DELETE(req, { params }) {
       );
     }
 
-    await Profissional.findByIdAndDelete(params.id);
+    const { id } = await params;
+    await Profissional.findByIdAndDelete(id);
 
     return Response.json({
       message: "Profissional excluído com sucesso",
@@ -82,10 +83,11 @@ export async function PUT(req, { params }) {
       );
     }
 
+    const { id } = await params;
     const body = await req.json();
 
     const profissional = await Profissional.findByIdAndUpdate(
-      params.id,
+      id,
       {
         nome: body.nome,
         especialidade: body.especialidade,
