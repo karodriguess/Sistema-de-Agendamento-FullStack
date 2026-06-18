@@ -58,9 +58,14 @@ export function Profissionais() {
 
       <main className="flex-1 bg-slate-100 min-h-screen p-8">
         <p className="text-xs text-slate-400 mb-1">Pages / Profissionais</p>
-        <h1 className="text-2xl font-bold text-slate-800 mb-8">Profissionais</h1>
+        <h1 className="text-2xl font-bold text-slate-800 mb-8">
+          Profissionais
+        </h1>
 
-        <form onSubmit={handleCreate} className="bg-white rounded-xl shadow-sm p-6 mb-8">
+        <form
+          onSubmit={handleCreate}
+          className="bg-white rounded-xl shadow-sm p-6 mb-8"
+        >
           <h2 className="text-sm font-semibold text-slate-600 uppercase tracking-wide mb-4">
             {editingId ? "Editar Profissional" : "Novo Profissional"}
           </h2>
@@ -82,7 +87,7 @@ export function Profissionais() {
           </div>
           <button
             type="submit"
-            className="mt-4 bg-slate-800 hover:bg-slate-900 text-white text-sm font-medium px-6 py-2.5 rounded-lg transition-colors"
+            className="mt-4 bg-slate-800 hover:bg-slate-900 text-white text-sm font-medium px-6 py-2.5 rounded-lg transition-colors cursor-pointer"
           >
             {editingId ? "Salvar Alterações" : "Cadastrar"}
           </button>
@@ -92,27 +97,40 @@ export function Profissionais() {
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-slate-100 bg-slate-50">
-                <th className="text-left px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">Nome</th>
-                <th className="text-left px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">Especialidade</th>
-                <th className="text-left px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">Ações</th>
+                <th className="text-left px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">
+                  Nome
+                </th>
+                <th className="text-left px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">
+                  Especialidade
+                </th>
+                <th className="text-left px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">
+                  Ações
+                </th>
               </tr>
             </thead>
             <tbody>
               {profissionais.map((profissional) => (
-                <tr key={profissional._id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
-                  <td className="px-6 py-4 text-slate-700 font-medium">{profissional.nome}</td>
-                  <td className="px-6 py-4 text-slate-500">{profissional.especialidade}</td>
+                <tr
+                  key={profissional._id}
+                  className="border-b border-slate-100 hover:bg-slate-50 transition-colors"
+                >
+                  <td className="px-6 py-4 text-slate-700 font-medium">
+                    {profissional.nome}
+                  </td>
+                  <td className="px-6 py-4 text-slate-500">
+                    {profissional.especialidade}
+                  </td>
                   <td className="px-6 py-4">
-                    <div className="flex gap-3">
+                    <div className="flex gap-5">
                       <button
                         onClick={() => handleEdit(profissional)}
-                        className="text-xs font-medium text-slate-600 hover:text-slate-900 transition-colors"
+                        className="text-xs font-medium text-slate-600 hover:text-slate-900 transition-colors cursor-pointer"
                       >
                         Editar
                       </button>
                       <button
                         onClick={() => handleDelete(profissional._id)}
-                        className="text-xs font-medium text-red-400 hover:text-red-600 transition-colors"
+                        className="text-xs font-medium text-red-400 hover:text-red-600 transition-colors cursor-pointer"
                       >
                         Excluir
                       </button>
