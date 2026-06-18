@@ -7,11 +7,6 @@ const ServicoSchema = new mongoose.Schema(
       required: true,
     },
 
-    descricao: {
-      type: String,
-      default: "",
-    },
-
     duracao: {
       type: Number,
       required: true,

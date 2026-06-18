@@ -1,53 +1,118 @@
 import { connectDB } from "../../../../lib/mongodb";
 import Servico from "../../../../models/Servico";
+import jwt from "jsonwebtoken";
 
 export async function PUT(req, { params }) {
   try {
     await connectDB();
 
-    const role = req.headers.get("x-user-role");
+    const authHeader = req.headers.get("authorization");
 
-    if (role !== "admin") {
-      return Response.json({ error: "Acesso negado" }, { status: 403 });
+    if (!authHeader) {
+      return Response.json(
+        {
+          error: "Token não enviado",
+        },
+        {
+          status: 401,
+        }
+      );
     }
 
+    const token = authHeader.split(" ")[1];
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    if (decoded.perfil !== "admin") {
+      return Response.json(
+        {
+          error: "Acesso negado",
+        },
+        {
+          status: 403,
+        }
+      );
+    }
+
+    const { id } = await params;
     const body = await req.json();
 
     const servico = await Servico.findByIdAndUpdate(
-      params.id,
+      id,
       {
         nome: body.nome,
-        descricao: body.descricao,
         duracao: body.duracao,
         preco: body.preco,
       },
-      { new: true }
+      {
+        new: true,
+      }
     );
 
-    return Response.json(servico);
+    return Response.json({
+      message: "Serviço atualizado com sucesso",
+      servico,
+    });
   } catch (error) {
-    return Response.json({ error: error.message }, { status: 500 });
+    return Response.json(
+      {
+        error: error.message,
+      },
+      {
+        status: 500,
+      }
+    );
   }
 }
+
+//DELETAR
 
 export async function DELETE(req, { params }) {
   try {
     await connectDB();
 
-    const role = req.headers.get("x-user-role");
+    const authHeader = req.headers.get("authorization");
 
-    if (role !== "admin") {
-      return Response.json({ error: "Acesso negado" }, { status: 403 });
+    if (!authHeader) {
+      return Response.json(
+        {
+          error: "Token não enviado",
+        },
+        {
+          status: 401,
+        }
+      );
     }
 
-    await Servico.findByIdAndUpdate(params.id, {
-      ativo: false,
-    });
+    const token = authHeader.split(" ")[1];
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    if (decoded.perfil !== "admin") {
+      return Response.json(
+        {
+          error: "Acesso negado",
+        },
+        {
+          status: 403,
+        }
+      );
+    }
+
+    const { id } = await params;
+    await Servico.findByIdAndDelete(id);
 
     return Response.json({
-      message: "Serviço removido com sucesso",
+      message: "Serviço excluído com sucesso",
     });
   } catch (error) {
-    return Response.json({ error: error.message }, { status: 500 });
+    return Response.json(
+      {
+        error: error.message,
+      },
+      {
+        status: 500,
+      }
+    );
   }
 }

@@ -1,12 +1,29 @@
 import { connectDB } from "../../../lib/mongodb";
 import Servico from "../../../models/Servico";
+import jwt from "jsonwebtoken";
 
 export async function POST(req) {
   try {
     await connectDB();
-    const role = req.headers.get("x-user-role");
 
-    if (role !== "admin") {
+    const authHeader = req.headers.get("authorization");
+
+    if (!authHeader) {
+      return Response.json(
+        {
+          error: "Token não enviado",
+        },
+        {
+          status: 401,
+        }
+      );
+    }
+
+    const token = authHeader.split(" ")[1];
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    if (decoded.perfil !== "admin") {
       return Response.json(
         {
           error: "Acesso negado",
@@ -16,11 +33,11 @@ export async function POST(req) {
         }
       );
     }
+
     const body = await req.json();
 
     const servico = await Servico.create({
       nome: body.nome,
-      descricao: body.descricao,
       duracao: body.duracao,
       preco: body.preco,
     });
@@ -41,9 +58,7 @@ export async function GET() {
   try {
     await connectDB();
 
-    const servicos = await Servico.find({
-      ativo: true,
-    });
+    const servicos = await Servico.find();
 
     return Response.json(servicos);
   } catch (error) {
