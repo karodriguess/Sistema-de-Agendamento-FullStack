@@ -1,5 +1,7 @@
 import { connectDB } from "../../../../lib/mongodb";
 import Agendamento from "../../../../models/Agendamento";
+import Servico from "../../../../models/Servico";
+import Profissional from "../../../../models/Profissional";
 
 export async function GET(req) {
   try {

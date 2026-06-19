@@ -1,5 +1,8 @@
 import { connectDB } from "../../../lib/mongodb";
 import Agendamento from "../../../models/Agendamento";
+import Servico from "../../../models/Servico";
+import Profissional from "../../../models/Profissional";
+import User from "../../../models/User";
 import jwt from "jsonwebtoken";
 
 export async function POST(req) {
@@ -13,12 +16,16 @@ export async function POST(req) {
     const token = authHeader.split(" ")[1];
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
+    if (decoded.perfil === "admin") {
+      return Response.json(
+        { error: "Administradores não podem realizar agendamentos" },
+        { status: 403 }
+      );
+    }
+
     const body = await req.json();
 
-    const clienteId =
-      decoded.perfil === "admin" && body.clienteId
-        ? body.clienteId
-        : decoded.id;
+    const clienteId = decoded.id;
 
     if (
       !body.profissionalId ||
