@@ -8,7 +8,11 @@ export async function GET(req) {
 
     const { searchParams } = new URL(req.url);
     const profissionalId = searchParams.get("profissionalId");
-    const query = profissionalId ? { profissionalId } : {};
+    const mes = searchParams.get("mes"); // formato "YYYY-MM", ex: "2026-06"
+
+    const query = {};
+    if (profissionalId) query.profissionalId = profissionalId;
+    if (mes) query.data = { $regex: `^${mes}-` };
 
     const disponibilidades = await Disponibilidade.find(query).populate(
       "profissionalId"
@@ -42,10 +46,10 @@ export async function PUT(req) {
       return Response.json({ error: "Dados inválidos" }, { status: 400 });
     }
 
-    for (const { diaSemana, horarios } of dias) {
+    for (const { data, horarios } of dias) {
       await Disponibilidade.findOneAndUpdate(
-        { profissionalId, diaSemana },
-        { horarios },
+        { profissionalId, data },
+        { $set: { horarios } },
         { upsert: true, new: true }
       );
     }
