@@ -43,6 +43,7 @@ export async function PUT(req, { params }) {
         nome: body.nome,
         duracao: body.duracao,
         preco: body.preco,
+        profissionalId: body.profissionalId || null,
       },
       {
         new: true,

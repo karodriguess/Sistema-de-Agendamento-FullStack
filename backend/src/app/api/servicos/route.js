@@ -40,6 +40,7 @@ export async function POST(req) {
       nome: body.nome,
       duracao: body.duracao,
       preco: body.preco,
+      profissionalId: body.profissionalId || null,
     });
 
     return Response.json(
@@ -54,11 +55,18 @@ export async function POST(req) {
   }
 }
 
-export async function GET() {
+export async function GET(req) {
   try {
     await connectDB();
 
-    const servicos = await Servico.find();
+    const { searchParams } = new URL(req.url);
+    const profissionalId = searchParams.get("profissionalId");
+    const query = profissionalId ? { profissionalId } : {};
+
+    const servicos = await Servico.find(query).populate(
+      "profissionalId",
+      "nome especialidade"
+    );
 
     return Response.json(servicos);
   } catch (error) {
