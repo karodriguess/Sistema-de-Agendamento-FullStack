@@ -1,4 +1,4 @@
-<h1 align="center">📅 SasS de Agendamento</h1>
+<h1 align="center">📅 Sistema de Agendamento</h1>
 
 <p align="center">
   <img alt="Status" src="https://img.shields.io/badge/status-em%20desenvolvimento-yellow">
