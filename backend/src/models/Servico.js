@@ -21,6 +21,12 @@ const ServicoSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
+
+    profissionalId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Profissional",
+      default: null,
+    },
   },
   {
     timestamps: true,
