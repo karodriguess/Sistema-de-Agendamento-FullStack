@@ -6,21 +6,29 @@ import {
   updateServico,
   deleteServico,
 } from "../../services/servicos";
+import { getProfissionais } from "../../services/profissionais";
+
+interface Profissional {
+  _id: string;
+  nome: string;
+  especialidade: string;
+}
 
 interface Servico {
   _id: string;
   nome: string;
-  descricao: string;
   duracao: number;
   preco: number;
+  profissionalId?: { _id: string; nome: string } | null;
 }
 
 export function Servicos() {
   const [servicos, setServicos] = useState<Servico[]>([]);
+  const [profissionais, setProfissionais] = useState<Profissional[]>([]);
   const [nome, setNome] = useState("");
-  const [descricao, setDescricao] = useState("");
   const [duracao, setDuracao] = useState("");
   const [preco, setPreco] = useState("");
+  const [profissionalId, setProfissionalId] = useState("");
   const [editingId, setEditingId] = useState<string | null>(null);
 
   async function loadServicos() {
@@ -31,9 +39,9 @@ export function Servicos() {
   function handleEdit(servico: Servico) {
     setEditingId(servico._id);
     setNome(servico.nome);
-    setDescricao(servico.descricao);
     setDuracao(String(servico.duracao));
     setPreco(String(servico.preco));
+    setProfissionalId(servico.profissionalId?._id ?? "");
   }
 
   async function handleDelete(id: string) {
@@ -44,30 +52,27 @@ export function Servicos() {
 
   useEffect(() => {
     loadServicos();
+    getProfissionais().then(setProfissionais);
   }, []);
 
   async function handleCreate(e: React.FormEvent) {
     e.preventDefault();
+    const payload = {
+      nome,
+      duracao: Number(duracao),
+      preco: Number(preco),
+      profissionalId: profissionalId || undefined,
+    };
     if (editingId) {
-      await updateServico(editingId, {
-        nome,
-        descricao,
-        duracao: Number(duracao),
-        preco: Number(preco),
-      });
+      await updateServico(editingId, payload);
       setEditingId(null);
     } else {
-      await createServico({
-        nome,
-        descricao,
-        duracao: Number(duracao),
-        preco: Number(preco),
-      });
+      await createServico(payload);
     }
     setNome("");
-    setDescricao("");
     setDuracao("");
     setPreco("");
+    setProfissionalId("");
     loadServicos();
   }
 
@@ -86,7 +91,7 @@ export function Servicos() {
           <h2 className="text-sm font-semibold text-slate-600 uppercase tracking-wide mb-4">
             {editingId ? "Editar Serviço" : "Novo Serviço"}
           </h2>
-          <div className="grid md:grid-cols-3 gap-4">
+          <div className="grid md:grid-cols-2 gap-4 mb-4">
             <input
               type="text"
               placeholder="Nome"
@@ -94,7 +99,20 @@ export function Servicos() {
               onChange={(e) => setNome(e.target.value)}
               className="w-full border border-slate-200 rounded-lg px-4 py-2.5 text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-300"
             />
-
+            <select
+              value={profissionalId}
+              onChange={(e) => setProfissionalId(e.target.value)}
+              className="w-full border border-slate-200 rounded-lg px-4 py-2.5 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-300 bg-white"
+            >
+              <option value="">— Selecione o profissional —</option>
+              {profissionais.map((p) => (
+                <option key={p._id} value={p._id}>
+                  {p.nome} · {p.especialidade}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="grid md:grid-cols-2 gap-4">
             <input
               type="number"
               placeholder="Duração (min)"
@@ -116,6 +134,21 @@ export function Servicos() {
           >
             {editingId ? "Atualizar" : "Salvar"}
           </button>
+          {editingId && (
+            <button
+              type="button"
+              onClick={() => {
+                setEditingId(null);
+                setNome("");
+                setDuracao("");
+                setPreco("");
+                setProfissionalId("");
+              }}
+              className="mt-4 ml-3 text-sm text-slate-400 hover:text-slate-600 transition-colors cursor-pointer"
+            >
+              Cancelar
+            </button>
+          )}
         </form>
 
         <div className="bg-white rounded-xl shadow-sm overflow-hidden">
@@ -124,6 +157,9 @@ export function Servicos() {
               <tr className="border-b border-slate-100 bg-slate-50">
                 <th className="text-left px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">
                   Nome
+                </th>
+                <th className="text-left px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">
+                  Profissional
                 </th>
                 <th className="text-left px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">
                   Duração
@@ -144,6 +180,11 @@ export function Servicos() {
                 >
                   <td className="px-6 py-4 text-slate-700 font-medium">
                     {servico.nome}
+                  </td>
+                  <td className="px-6 py-4 text-slate-500">
+                    {servico.profissionalId?.nome ?? (
+                      <span className="text-slate-300">—</span>
+                    )}
                   </td>
                   <td className="px-6 py-4 text-slate-500">
                     {servico.duracao} min
