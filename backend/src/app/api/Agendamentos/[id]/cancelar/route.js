@@ -5,7 +5,6 @@ export async function PATCH(req, { params }) {
   try {
     await connectDB();
 
-    const body = await req.json();
     const userId = req.headers.get("x-user-id");
     const role = req.headers.get("x-user-role");
 
@@ -22,27 +21,11 @@ export async function PATCH(req, { params }) {
       return Response.json({ error: "Acesso negado" }, { status: 403 });
     }
 
-    const conflito = await Agendamento.findOne({
-      _id: { $ne: params.id },
-      profissionalId: agendamento.profissionalId,
-      data: body.data,
-      horario: body.horario,
-      status: { $nin: ["cancelado", "cancelado_cliente"] },
-    });
-
-    if (conflito) {
-      return Response.json({ error: "Horário indisponível" }, { status: 400 });
-    }
-
-    agendamento.dataAnterior = agendamento.data;
-    agendamento.horarioAnterior = agendamento.horario;
-    agendamento.data = body.data;
-    agendamento.horario = body.horario;
-    agendamento.status = "remarcado_cliente";
+    agendamento.status = "cancelado_cliente";
     await agendamento.save();
 
     return Response.json({
-      message: "Agendamento remarcado com sucesso",
+      message: "Agendamento cancelado com sucesso",
       agendamento,
     });
   } catch (error) {
