@@ -1,7 +1,7 @@
 import { connectDB } from "../../../../lib/mongodb";
 import Agendamento from "../../../../models/Agendamento";
-import Servico from "../../../../models/Servico";
-import Profissional from "../../../../models/Profissional";
+
+const STATUS_CANCELADOS = ["cancelado", "cancelado_cliente"];
 
 export async function GET(req) {
   try {
@@ -11,22 +11,14 @@ export async function GET(req) {
 
     const agendamentos = await Agendamento.find({
       clienteId,
+      status: { $nin: STATUS_CANCELADOS },
     })
       .populate("profissionalId", "nome especialidade")
       .populate("servicoId", "nome preco duracao")
-      .sort({
-        data: 1,
-      });
+      .sort({ data: 1, horario: 1 });
 
     return Response.json(agendamentos);
   } catch (error) {
-    return Response.json(
-      {
-        error: error.message,
-      },
-      {
-        status: 500,
-      }
-    );
+    return Response.json({ error: error.message }, { status: 500 });
   }
 }

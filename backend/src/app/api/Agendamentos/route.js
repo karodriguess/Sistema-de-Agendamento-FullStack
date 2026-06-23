@@ -48,7 +48,7 @@ export async function POST(req) {
       data: body.data,
       horario: body.horario,
       status: {
-        $ne: "cancelado",
+        $nin: ["cancelado", "cancelado_cliente"],
       },
     });
 

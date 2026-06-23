@@ -61,7 +61,9 @@ export async function GET(req) {
 
     const { searchParams } = new URL(req.url);
     const profissionalId = searchParams.get("profissionalId");
-    const query = profissionalId ? { profissionalId } : {};
+    const query = profissionalId
+      ? { $or: [{ profissionalId }, { profissionalId: null }] }
+      : {};
 
     const servicos = await Servico.find(query).populate(
       "profissionalId",
