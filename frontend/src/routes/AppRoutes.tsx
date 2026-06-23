@@ -6,7 +6,9 @@ import { Dashboard } from "../pages/Dashboard";
 import { Profissionais } from "../pages/Profissionais";
 import { Servicos } from "../pages/Servicos";
 import { Agendamentos } from "../pages/Agendamentos";
-import { MeusAgendamentos } from "../pages/MeusAgendamentos";
+import { MeusAgendamentos } from "../pages/Cliente/MeusAgendamentos";
+import { VerAgendamentos } from "../pages/Cliente/VerAgendamentos";
+import { NovoAgendamento } from "../pages/NovoAgendamento";
 import { Disponibilidades } from "../pages/Disponibilidades";
 import { ProtectedRoute } from "../components/ProtectedRoute";
 
@@ -58,6 +60,24 @@ export function AppRoutes() {
         element={
           <ProtectedRoute>
             <MeusAgendamentos />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/ver-agendamentos"
+        element={
+          <ProtectedRoute>
+            <VerAgendamentos />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/novo-agendamento"
+        element={
+          <ProtectedRoute>
+            <NovoAgendamento />
           </ProtectedRoute>
         }
       />
