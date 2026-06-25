@@ -85,7 +85,7 @@ export function Agendamentos() {
           <select
             value={filtroProf}
             onChange={(e) => setFiltroProf(e.target.value)}
-            className="border border-slate-200 rounded-lg px-4 py-2.5 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-300 bg-white min-w-[240px]"
+            className="border border-slate-200 rounded-lg px-4 py-2.5 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-300 bg-white min-w-240px"
           >
             <option value="todos">Todos os profissionais</option>
             {profissionais.map((p) => (
@@ -160,7 +160,9 @@ export function Agendamentos() {
                       <td className="px-6 py-4 text-slate-500">{a.horario}</td>
                       <td className="px-6 py-4">
                         <span
-                          className={`inline-block px-2.5 py-1 rounded-full text-xs font-medium ${statusStyles[a.status] ?? ""}`}
+                          className={`inline-block px-2.5 py-1 rounded-full text-xs font-medium ${
+                            statusStyles[a.status] ?? ""
+                          }`}
                         >
                           {statusLabels[a.status] ?? a.status}
                         </span>

@@ -85,7 +85,7 @@ export function Cadastro() {
     after:absolute
     after:left-0
     after:bottom-0
-    after:h-[1px]
+    
     after:w-0
     after:bg-slate-900
     after:duration-200

@@ -157,7 +157,7 @@ export function Dashboard() {
           {cards.map(({ label, value, icon, sub }) => (
             <div key={label} className="pt-6">
               <div className="bg-white rounded-xl p-5 shadow-sm relative">
-                <div className="absolute -top-5 right-4 w-10 h-10 bg-gradient-to-br from-slate-600 to-slate-900 rounded-xl flex items-center justify-center shadow-lg">
+                <div className="absolute -top-5 right-4 w-10 h-10 from-slate-600 to-slate-900 rounded-xl flex items-center justify-center shadow-lg">
                   {icon}
                 </div>
                 <p className="text-xs text-slate-400 font-medium uppercase tracking-wide">
