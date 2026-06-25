@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../hooks/useAuth";
+import { useAuth } from "../../../hooks/useAuth";
 import {
   getMeusAgendamentos,
   cancelarAgendamentoCliente,
-} from "../../services/agendamentos";
-import CardAgendamento from "../../components/cliente/CardAgendamento";
-import ModalCancelarAgendamento from "../../components/cliente/ModalCancelarAgendamento";
+} from "../../../services/agendamentos";
+import CardAgendamento from "../../../components/cliente/CardAgendamento";
+import ModalCancelarAgendamento from "../../../components/cliente/ModalCancelarAgendamento";
 
 function CalendarEmptyIcon() {
   return (
@@ -19,7 +19,11 @@ function CalendarEmptyIcon() {
     >
       <rect x="3" y="4" width="18" height="18" rx="2" />
       <path d="M16 2v4M8 2v4M3 10h18" />
-      <path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01" strokeLinecap="round" strokeWidth={2} />
+      <path
+        d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"
+        strokeLinecap="round"
+        strokeWidth={2}
+      />
     </svg>
   );
 }
@@ -67,11 +71,21 @@ export function VerAgendamentos() {
   async function carregarAgendamentos() {
     setCarregando(true);
     setErro("");
+
     try {
       const dados = await getMeusAgendamentos();
+
+      console.log("Agendamentos recebidos:", dados);
+
       setAgendamentos(dados);
-    } catch {
-      setErro("Erro ao carregar agendamentos. Tente novamente.");
+    } catch (error) {
+      console.error("Erro ao carregar agendamentos:", error);
+
+      setErro(
+        error?.response?.data?.error ||
+          error?.message ||
+          "Erro ao carregar agendamentos. Tente novamente."
+      );
     } finally {
       setCarregando(false);
     }
@@ -100,9 +114,7 @@ export function VerAgendamentos() {
       setMensagemSucesso("Agendamento cancelado com sucesso.");
       setTimeout(() => setMensagemSucesso(""), 4000);
     } catch (e) {
-      setErro(
-        e?.response?.data?.error ?? "Erro ao cancelar. Tente novamente."
-      );
+      setErro(e?.response?.data?.error ?? "Erro ao cancelar. Tente novamente.");
       fecharModalCancelar();
     } finally {
       setCancelando(false);

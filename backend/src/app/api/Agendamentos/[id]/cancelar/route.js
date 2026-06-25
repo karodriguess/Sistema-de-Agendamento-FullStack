@@ -1,24 +1,37 @@
-import { connectDB } from "../../../../../lib/mongodb";
-import Agendamento from "../../../../../models/Agendamento";
+import { connectDB } from "../../../../../../lib/mongodb";
+import Agendamento from "../../../../../../models/Agendamento";
+import jwt from "jsonwebtoken";
 
 export async function PATCH(req, { params }) {
   try {
     await connectDB();
 
-    const userId = req.headers.get("x-user-id");
-    const role = req.headers.get("x-user-role");
+    const authHeader = req.headers.get("authorization");
 
-    const agendamento = await Agendamento.findById(params.id);
+    if (!authHeader?.startsWith("Bearer ")) {
+      return Response.json({ error: "Token não enviado" }, { status: 401 });
+    }
+
+    const token = authHeader.split(" ")[1];
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    const { id } = await params;
+
+    const agendamento = await Agendamento.findById(id);
 
     if (!agendamento) {
       return Response.json(
-        { error: "Agendamento não encontrado" },
+        { error: "Falha ao cancelar. Tente novamente" },
         { status: 404 }
       );
     }
 
-    if (role !== "admin" && agendamento.clienteId.toString() !== userId) {
-      return Response.json({ error: "Acesso negado" }, { status: 403 });
+    // segurança: só dono pode cancelar
+    if (agendamento.clienteId.toString() !== decoded.id) {
+      return Response.json(
+        { error: "Sem permissão para cancelar este agendamento" },
+        { status: 403 }
+      );
     }
 
     agendamento.status = "cancelado_cliente";
@@ -26,7 +39,6 @@ export async function PATCH(req, { params }) {
 
     return Response.json({
       message: "Agendamento cancelado com sucesso",
-      agendamento,
     });
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });
