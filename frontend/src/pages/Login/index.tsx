@@ -36,10 +36,14 @@ export function Login() {
         {/* Lado Esquerdo */}
         <div className="p-10 md:p-14 flex flex-col justify-between">
           <div>
-            <div className="flex items-center gap-2 mb-8">
-              <div className="w-5 h-5 rounded-full bg-yellow-200"></div>
+            <div className="flex items-center gap-2 mb-5">
+              <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center shadow">
+                <span className="text-pink-600 font-bold text-sm">C</span>
+              </div>
 
-              <span className="text-gray-700 font-medium">Agendamento</span>
+              <h2 className="text-slate-900 font-semibold text-lg tracking-wide">
+                Studio
+              </h2>
             </div>
 
             <h1 className="text-4xl font-normal text-[#1f1f1f] mb-4">
@@ -114,8 +118,7 @@ export function Login() {
               <button
                 type="submit"
                 className="
-                  bg-slate-900
-                  text-white
+                   bg-pink-800 text-white hover:bg-pink-700 transition-all 
                   px-8
                   py-3
                   rounded-full

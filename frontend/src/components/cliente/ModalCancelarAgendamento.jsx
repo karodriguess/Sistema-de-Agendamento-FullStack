@@ -52,7 +52,7 @@ export default function ModalCancelarAgendamento({
           <button
             onClick={onConfirmar}
             disabled={cancelando}
-            className="w-full py-3 rounded-xl bg-red-600 hover:bg-red-700 disabled:opacity-60 text-white text-sm font-semibold transition-colors cursor-pointer"
+            className="w-full py-3 rounded-xl bg-red-700 disabled:opacity-60 text-white text-sm font-semibold transition-colors cursor-pointer"
           >
             {cancelando ? "Cancelando..." : "Confirmar cancelamento"}
           </button>

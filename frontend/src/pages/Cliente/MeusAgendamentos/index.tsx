@@ -9,7 +9,7 @@ export function MeusAgendamentos() {
     <div className="flex min-h-screen bg-slate-100">
       <div className="flex-1 flex flex-col min-w-0">
         {/* Header */}
-        <header className="bg-white border-b border-slate-200 px-8 py-5 flex items-center justify-between">
+        <header className="bg-white border-b border-slate-200 p-4 md:px-8 flex items-center justify-between">
           <div>
             <div className="flex items-center gap-3 p-3 mb-2">
               <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center shadow">
@@ -24,15 +24,8 @@ export function MeusAgendamentos() {
 
           <div className="flex items-center gap-4">
             <button
-              onClick={() => navigate("/ver-agendamentos")}
-              className="flex items-center gap-2 bg-pink-800 hover:bg-pink-900 text-white font-semibold text-sm px-4 py-2.5 rounded-xl transition-colors cursor-pointer"
-            >
-              Ver meus Agendamentos
-            </button>
-
-            <button
               onClick={signOut}
-              className="text-xs text-slate-500 hover:text-slate-800 transition-colors cursor-pointer"
+              className="text-sm text-slate-500 hover:text-slate-800 transition-colors cursor-pointer"
             >
               Sair
             </button>
@@ -46,17 +39,26 @@ export function MeusAgendamentos() {
               📅
             </div>
 
-            <p className="text-slate-500 font-medium mb-4">
+            <p className="text-slate-500 font-medium mb-6">
               Gerencie seus horários
             </p>
 
-            <button
-              onClick={() => navigate("/novo-agendamento")}
-              className="text-sm bg-slate-900 text-white px-5 py-2.5 rounded-xl transition-colors cursor-pointer"
-            >
-              <span className="text-base leading-none mr-3">+</span>
-              Agendar agora
-            </button>
+            <div className="flex flex-col items-center gap-4">
+              <button
+                onClick={() => navigate("/novo-agendamento")}
+                className="w-60 bg-slate-900 text-white px-5 py-2.5 rounded-xl transition-colors cursor-pointer font-semibold hover:bg-slate-800"
+              >
+                <span className="mr-3">+</span>
+                Agendar agora
+              </button>
+
+              <button
+                onClick={() => navigate("/ver-agendamentos")}
+                className="w-60 bg-pink-800 hover:bg-pink-900 text-white font-semibold px-5 py-2.5 rounded-xl transition-colors cursor-pointer"
+              >
+                Ver meus Agendamentos
+              </button>
+            </div>
           </div>
         </main>
       </div>
