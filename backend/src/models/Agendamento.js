@@ -32,15 +32,8 @@ const AgendamentoSchema = new mongoose.Schema(
 
     status: {
       type: String,
-      enum: [
-        "agendado",
-        "confirmado",
-        "cancelado",
-        "cancelado_cliente",
-        "remarcado_cliente",
-        "concluido",
-      ],
-      default: "confirmado",
+      enum: ["agendado", "cancelado", "cancelado_cliente", "remarcado_cliente"],
+      default: "agendado",
     },
 
     dataAnterior: {

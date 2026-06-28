@@ -30,7 +30,7 @@ export async function GET(req) {
     const agendamentos = await Agendamento.find({
       clienteId: decoded.id,
       status: {
-        $in: ["confirmado", "remarcado_cliente"],
+        $nin: ["cancelado", "cancelado_cliente"],
       },
     })
       .populate("profissionalId", "nome especialidade")
