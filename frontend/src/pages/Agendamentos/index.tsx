@@ -21,7 +21,7 @@ interface Agendamento {
   };
   data: string;
   horario: string;
-  status: "agendado" | "cancelado" | "concluido";
+  status: "agendado" | "cancelado" | "cancelado_cliente" | "remarcado_cliente";
 }
 
 interface Profissional {
@@ -30,15 +30,23 @@ interface Profissional {
 }
 
 const statusStyles: Record<string, string> = {
-  agendado: "bg-blue-50 text-blue-600",
-  concluido: "bg-emerald-50 text-emerald-600",
-  cancelado: "bg-red-50 text-red-500",
+  agendado: "bg-green-100 text-green-700 border border-green-200",
+
+  remarcado_cliente: "bg-amber-100 text-amber-700 border border-amber-200",
+
+  cancelado: "bg-red-100 text-red-700 border border-red-200",
+
+  cancelado_cliente: "bg-red-100 text-red-700 border border-red-200",
 };
 
 const statusLabels: Record<string, string> = {
   agendado: "Agendado",
-  concluido: "Concluído",
+
+  remarcado_cliente: "Remarcado",
+
   cancelado: "Cancelado",
+
+  cancelado_cliente: "Cancelado",
 };
 
 function formatDate(date: string) {
@@ -58,10 +66,12 @@ export function Agendamentos() {
         getAgendamentos(),
         getProfissionais(),
       ]);
+
       setAgendamentos(ags);
       setProfissionais(profs);
       setLoading(false);
     }
+
     load();
   }, []);
 
@@ -76,18 +86,21 @@ export function Agendamentos() {
 
       <main className="flex-1 bg-slate-100 min-h-screen p-8">
         <p className="text-xs text-slate-400 mb-1">Pages / Agendamentos</p>
+
         <h1 className="text-2xl font-bold text-slate-800 mb-8">Agendamentos</h1>
 
         <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
           <h2 className="text-sm font-semibold text-slate-600 uppercase tracking-wide mb-4">
             Filtrar por Profissional
           </h2>
+
           <select
             value={filtroProf}
             onChange={(e) => setFiltroProf(e.target.value)}
-            className="border border-slate-200 rounded-lg px-4 py-2.5 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-300 bg-white min-w-240px"
+            className="border border-slate-200 rounded-lg px-4 py-2.5 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-300 bg-white"
           >
             <option value="todos">Todos os profissionais</option>
+
             {profissionais.map((p) => (
               <option key={p._id} value={p._id}>
                 {p.nome}
@@ -106,26 +119,33 @@ export function Agendamentos() {
                   <th className="text-left px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">
                     Cliente
                   </th>
+
                   <th className="text-left px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">
                     Telefone
                   </th>
+
                   <th className="text-left px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">
                     Serviço
                   </th>
+
                   <th className="text-left px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">
                     Profissional
                   </th>
+
                   <th className="text-left px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">
                     Data
                   </th>
+
                   <th className="text-left px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">
                     Horário
                   </th>
+
                   <th className="text-left px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">
                     Status
                   </th>
                 </tr>
               </thead>
+
               <tbody>
                 {filtrados.length === 0 ? (
                   <tr>
@@ -142,28 +162,37 @@ export function Agendamentos() {
                       key={a._id}
                       className="border-b border-slate-100 hover:bg-slate-50 transition-colors"
                     >
-                      <td className="px-6 py-4 text-slate-700 font-medium">
+                      <td className="px-6 py-4 font-medium text-slate-700">
                         {a.clienteId?.nome ?? "-"}
                       </td>
+
                       <td className="px-6 py-4 text-slate-500">
                         {a.clienteId?.telefone ?? "-"}
                       </td>
+
                       <td className="px-6 py-4 text-slate-500">
                         {a.servicoId?.nome ?? "-"}
                       </td>
+
                       <td className="px-6 py-4 text-slate-500">
                         {a.profissionalId?.nome ?? "-"}
                       </td>
+
                       <td className="px-6 py-4 text-slate-500">
                         {formatDate(a.data)}
                       </td>
+
                       <td className="px-6 py-4 text-slate-500">{a.horario}</td>
+
                       <td className="px-6 py-4">
                         <span
-                          className={`inline-block px-2.5 py-1 rounded-full text-xs font-medium ${
-                            statusStyles[a.status] ?? ""
+                          className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold whitespace-nowrap ${
+                            statusStyles[a.status] ??
+                            "bg-slate-100 text-slate-700"
                           }`}
                         >
+                          <span className="w-2 h-2 rounded-full bg-current opacity-70"></span>
+
                           {statusLabels[a.status] ?? a.status}
                         </span>
                       </td>
