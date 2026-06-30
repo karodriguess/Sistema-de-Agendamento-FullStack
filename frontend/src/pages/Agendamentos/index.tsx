@@ -54,10 +54,21 @@ function formatDate(date: string) {
   return `${day}/${month}/${year}`;
 }
 
+function getHojeStr() {
+  const hoje = new Date();
+  const mes = String(hoje.getMonth() + 1).padStart(2, "0");
+  const dia = String(hoje.getDate()).padStart(2, "0");
+  return `${hoje.getFullYear()}-${mes}-${dia}`;
+}
+
 export function Agendamentos() {
   const [agendamentos, setAgendamentos] = useState<Agendamento[]>([]);
   const [profissionais, setProfissionais] = useState<Profissional[]>([]);
   const [filtroProf, setFiltroProf] = useState("todos");
+  const [filtroPeriodo, setFiltroPeriodo] = useState<"todos" | "hoje" | "data">(
+    "todos"
+  );
+  const [dataSelecionada, setDataSelecionada] = useState("");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -75,10 +86,19 @@ export function Agendamentos() {
     load();
   }, []);
 
-  const filtrados =
-    filtroProf === "todos"
-      ? agendamentos
-      : agendamentos.filter((a) => a.profissionalId?._id === filtroProf);
+  const filtrados = agendamentos.filter((a) => {
+    const matchProf =
+      filtroProf === "todos" || a.profissionalId?._id === filtroProf;
+
+    const matchPeriodo =
+      filtroPeriodo === "hoje"
+        ? a.data === getHojeStr()
+        : filtroPeriodo === "data"
+        ? a.data === dataSelecionada
+        : true;
+
+    return matchProf && matchPeriodo;
+  });
 
   return (
     <div className="flex">
@@ -91,22 +111,50 @@ export function Agendamentos() {
 
         <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
           <h2 className="text-sm font-semibold text-slate-600 uppercase tracking-wide mb-4">
-            Filtrar por Profissional
+            Filtros
           </h2>
 
-          <select
-            value={filtroProf}
-            onChange={(e) => setFiltroProf(e.target.value)}
-            className="border border-slate-200 rounded-lg px-4 py-2.5 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-300 bg-white"
-          >
-            <option value="todos">Todos os profissionais</option>
+          <div className="flex flex-wrap items-center gap-3">
+            <select
+              value={filtroProf}
+              onChange={(e) => setFiltroProf(e.target.value)}
+              className="border border-slate-200 rounded-lg px-4 py-2.5 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-300 bg-white"
+            >
+              <option value="todos">Todos os profissionais</option>
 
-            {profissionais.map((p) => (
-              <option key={p._id} value={p._id}>
-                {p.nome}
-              </option>
-            ))}
-          </select>
+              {profissionais.map((p) => (
+                <option key={p._id} value={p._id}>
+                  {p.nome}
+                </option>
+              ))}
+            </select>
+
+            <button
+              type="button"
+              onClick={() => {
+                setFiltroPeriodo(filtroPeriodo === "hoje" ? "todos" : "hoje");
+                setDataSelecionada("");
+              }}
+              className={`px-4 py-2.5 rounded-lg text-sm font-medium border transition-colors ${
+                filtroPeriodo === "hoje"
+                  ? "bg-slate-800 text-white border-slate-800"
+                  : "bg-white text-slate-700 border-slate-200 hover:bg-slate-50"
+              }`}
+            >
+              Hoje
+            </button>
+
+            <input
+              type="date"
+              value={dataSelecionada}
+              onChange={(e) => {
+                const value = e.target.value;
+                setDataSelecionada(value);
+                setFiltroPeriodo(value ? "data" : "todos");
+              }}
+              className="border border-slate-200 rounded-lg px-4 py-2.5 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-300 bg-white"
+            />
+          </div>
         </div>
 
         <div className="bg-white rounded-xl shadow-sm overflow-hidden">
