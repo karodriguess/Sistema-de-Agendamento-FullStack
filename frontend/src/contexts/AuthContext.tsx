@@ -60,11 +60,12 @@ export function AuthProvider({ children }: Props) {
   }
 
   function signOut() {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
+    localStorage.clear();
 
     setUser(null);
     setToken(null);
+
+    window.location.href = "/";
   }
 
   return (
