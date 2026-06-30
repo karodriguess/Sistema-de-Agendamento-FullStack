@@ -114,6 +114,18 @@ export function Dashboard() {
 
   const cards = [
     {
+      label: "Hoje",
+      value: dashboard?.agendamentosHoje ?? 0,
+      icon: <ClockIcon />,
+      sub: "Agendamentos do dia",
+    },
+    {
+      label: "Agendamentos",
+      value: dashboard?.totalAgendamentos ?? 0,
+      icon: <CalendarIcon />,
+      sub: "Total registrado",
+    },
+    {
       label: "Clientes",
       value: dashboard?.totalClientes ?? 0,
       icon: <PersonIcon />,
@@ -131,25 +143,13 @@ export function Dashboard() {
       icon: <BriefcaseIcon />,
       sub: "Total registrado",
     },
-    {
-      label: "Agendamentos",
-      value: dashboard?.totalAgendamentos ?? 0,
-      icon: <CalendarIcon />,
-      sub: "Total registrado",
-    },
-    {
-      label: "Hoje",
-      value: dashboard?.agendamentosHoje ?? 0,
-      icon: <ClockIcon />,
-      sub: "Agendamentos do dia",
-    },
   ];
 
   return (
     <div className="flex">
       <Sidebar />
 
-      <main className="flex-1 bg-slate-100 min-h-screen p-8">
+      <main className="flex-1 bg-slate-100 min-h-screen px-4 pb-4 pt-20 sm:px-6 sm:pb-6 sm:pt-20 md:p-8">
         <p className="text-xs text-slate-400 mb-1">Pages / Dashboard</p>
         <h1 className="text-2xl font-bold text-slate-800 mb-10">Dashboard</h1>
 

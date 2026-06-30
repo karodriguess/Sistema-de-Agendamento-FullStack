@@ -13,15 +13,30 @@ interface Profissional {
 }
 
 const NOMES_MESES = [
-  "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
-  "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro",
+  "Janeiro",
+  "Fevereiro",
+  "Março",
+  "Abril",
+  "Maio",
+  "Junho",
+  "Julho",
+  "Agosto",
+  "Setembro",
+  "Outubro",
+  "Novembro",
+  "Dezembro",
 ];
 
 const NOMES_DIAS_SEMANA = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
 
 const NOMES_DIAS_COMPLETOS = [
-  "Domingo", "Segunda-feira", "Terça-feira", "Quarta-feira",
-  "Quinta-feira", "Sexta-feira", "Sábado",
+  "Domingo",
+  "Segunda-feira",
+  "Terça-feira",
+  "Quarta-feira",
+  "Quinta-feira",
+  "Sexta-feira",
+  "Sábado",
 ];
 
 function generateTimeSlots(): string[] {
@@ -67,7 +82,9 @@ export function Disponibilidades() {
     return new Date(hoje.getFullYear(), hoje.getMonth(), 1);
   });
   const [dataSelecionada, setDataSelecionada] = useState<string | null>(null);
-  const [horariosPorData, setHorariosPorData] = useState<Record<string, string[]>>({});
+  const [horariosPorData, setHorariosPorData] = useState<
+    Record<string, string[]>
+  >({});
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [erro, setErro] = useState<string | null>(null);
@@ -127,7 +144,10 @@ export function Disponibilidades() {
 
   function selectAll() {
     if (!dataSelecionada) return;
-    setHorariosPorData((prev) => ({ ...prev, [dataSelecionada]: [...TIME_SLOTS] }));
+    setHorariosPorData((prev) => ({
+      ...prev,
+      [dataSelecionada]: [...TIME_SLOTS],
+    }));
     setSaved(false);
   }
 
@@ -143,7 +163,9 @@ export function Disponibilidades() {
     setErro(null);
     try {
       const horarios = horariosPorData[dataSelecionada] ?? [];
-      await salvarDisponibilidades(profissionalId, [{ data: dataSelecionada, horarios }]);
+      await salvarDisponibilidades(profissionalId, [
+        { data: dataSelecionada, horarios },
+      ]);
       setSaved(true);
     } catch (e: any) {
       setErro(e?.response?.data?.error ?? "Erro ao salvar. Tente novamente.");
@@ -157,21 +179,25 @@ export function Disponibilidades() {
   const hojeKey = toYYYYMMDD(hoje);
 
   const diasDoMes = getDiasDoMes(mesAtual.getFullYear(), mesAtual.getMonth());
-  const horariosDiaSelecionado = dataSelecionada ? (horariosPorData[dataSelecionada] ?? []) : [];
+  const horariosDiaSelecionado = dataSelecionada
+    ? horariosPorData[dataSelecionada] ?? []
+    : [];
   const allSelected = horariosDiaSelecionado.length === TIME_SLOTS.length;
 
   let labelDataSelecionada = "";
   if (dataSelecionada) {
     const [ano, mes, dia] = dataSelecionada.split("-").map(Number);
     const d = new Date(ano, mes - 1, dia);
-    labelDataSelecionada = `${NOMES_DIAS_COMPLETOS[d.getDay()]}, ${dia} de ${NOMES_MESES[mes - 1]} de ${ano}`;
+    labelDataSelecionada = `${NOMES_DIAS_COMPLETOS[d.getDay()]}, ${dia} de ${
+      NOMES_MESES[mes - 1]
+    } de ${ano}`;
   }
 
   return (
     <div className="flex">
       <Sidebar />
 
-      <main className="flex-1 bg-slate-100 min-h-screen p-8">
+      <main className="flex-1 bg-slate-100 min-h-screen px-4 pb-4 pt-20 sm:px-6 sm:pb-6 sm:pt-20 md:p-8">
         <p className="text-xs text-slate-400 mb-1">Pages / Disponibilidades</p>
         <h1 className="text-2xl font-bold text-slate-800 mb-8">
           Disponibilidades
@@ -189,7 +215,7 @@ export function Disponibilidades() {
               setDataSelecionada(null);
               setSaved(false);
             }}
-            className="w-full md:w-80 border border-slate-200 rounded-lg px-4 py-2.5 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-300 bg-white"
+            className="w-full sm:w-50 md:w-80 border border-slate-200 rounded-lg px-4 py-2.5 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-300 bg-white"
           >
             <option value="">— Selecione um profissional —</option>
             {profissionais.map((p) => (
@@ -247,19 +273,28 @@ export function Disponibilidades() {
                   const temHorarios = (horariosPorData[key]?.length ?? 0) > 0;
 
                   return (
-                    <div
-                      key={key}
-                      className="flex flex-col items-center"
-                    >
+                    <div key={key} className="flex flex-col items-center">
                       <button
                         onClick={() => handleDiaClick(dia)}
                         disabled={isPast}
                         className={`
                           w-9 h-9 rounded-full text-sm font-medium transition-all flex items-center justify-center
-                          ${isPast ? "text-slate-300 cursor-not-allowed" : "cursor-pointer"}
+                          ${
+                            isPast
+                              ? "text-slate-300 cursor-not-allowed"
+                              : "cursor-pointer"
+                          }
                           ${isSelecionado ? "bg-slate-800 text-white" : ""}
-                          ${isHoje && !isSelecionado ? "ring-2 ring-slate-400 text-slate-700" : ""}
-                          ${!isPast && !isSelecionado && !isHoje ? "text-slate-700 hover:bg-slate-100" : ""}
+                          ${
+                            isHoje && !isSelecionado
+                              ? "ring-2 ring-slate-400 text-slate-700"
+                              : ""
+                          }
+                          ${
+                            !isPast && !isSelecionado && !isHoje
+                              ? "text-slate-700 hover:bg-slate-100"
+                              : ""
+                          }
                         `}
                       >
                         {dia.getDate()}
@@ -278,13 +313,16 @@ export function Disponibilidades() {
             {/* Seletor de horários */}
             {dataSelecionada ? (
               <div className="bg-white rounded-xl shadow-sm p-6">
-                <div className="flex items-center justify-between mb-4">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4">
                   <div>
                     <h2 className="text-sm font-semibold text-slate-700">
                       {labelDataSelecionada}
                     </h2>
                     <p className="text-xs text-slate-400 mt-0.5">
-                      {horariosDiaSelecionado.length} horário{horariosDiaSelecionado.length !== 1 ? "s" : ""} selecionado{horariosDiaSelecionado.length !== 1 ? "s" : ""}
+                      {horariosDiaSelecionado.length} horário
+                      {horariosDiaSelecionado.length !== 1 ? "s" : ""}{" "}
+                      selecionado
+                      {horariosDiaSelecionado.length !== 1 ? "s" : ""}
                     </p>
                   </div>
                   <button
@@ -315,7 +353,7 @@ export function Disponibilidades() {
                 </div>
 
                 <div className="flex flex-col gap-2">
-                  <div className="flex items-center gap-4">
+                  <div className="flex flex-wrap items-center gap-4">
                     <button
                       onClick={handleSave}
                       disabled={saving}
@@ -329,9 +367,7 @@ export function Disponibilidades() {
                       </span>
                     )}
                   </div>
-                  {erro && (
-                    <p className="text-sm text-red-600">{erro}</p>
-                  )}
+                  {erro && <p className="text-sm text-red-600">{erro}</p>}
                 </div>
               </div>
             ) : (

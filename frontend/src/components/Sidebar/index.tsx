@@ -1,4 +1,23 @@
+import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
+
+function MenuIcon() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.5}
+      className="w-5 h-5"
+    >
+      <path
+        d="M4 6h16M4 12h16M4 18h16"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
 
 function DashboardIcon() {
   return (
@@ -98,39 +117,72 @@ const navItems = [
 
 export function Sidebar() {
   const location = useLocation();
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <aside className="w-64 bg-slate-900 min-h-screen p-4 flex flex-col shrink-0">
-      <div className="flex items-center gap-3 px-2 py-4 mb-2">
-        <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center shadow">
-          <span className="text-pink-600 font-bold text-sm">C</span>
-        </div>
-        <h2 className="text-white font-semibold text-lg tracking-wide">
+    <>
+      <div className="md:hidden fixed top-0 left-0 right-0 z-30 h-16 bg-slate-900 flex items-center px-4">
+        <button
+          type="button"
+          onClick={() => setIsOpen((open) => !open)}
+          aria-label={isOpen ? "Fechar menu" : "Abrir menu"}
+          aria-expanded={isOpen}
+          aria-controls="admin-sidebar"
+          className="text-white p-2 -ml-2 rounded-lg hover:bg-white/10 transition-colors cursor-pointer"
+        >
+          <MenuIcon />
+        </button>
+        <span className="text-white font-semibold text-lg tracking-wide ml-2">
           Studio
-        </h2>
+        </span>
       </div>
 
-      <div className="h-px bg-slate-700 mb-6" />
+      {isOpen && (
+        <div
+          className="md:hidden fixed inset-0 z-40 bg-black/50"
+          onClick={() => setIsOpen(false)}
+          aria-hidden="true"
+        />
+      )}
 
-      <nav className="flex flex-col gap-1">
-        {navItems.map(({ to, label, Icon }) => {
-          const active = location.pathname === to;
-          return (
-            <Link
-              key={to}
-              to={to}
-              className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
-                active
-                  ? "bg-white/10 text-white"
-                  : "text-slate-400 hover:text-white hover:bg-white/5"
-              }`}
-            >
-              <Icon />
-              {label}
-            </Link>
-          );
-        })}
-      </nav>
-    </aside>
+      <aside
+        id="admin-sidebar"
+        className={`w-64 bg-slate-900 min-h-screen p-4 flex flex-col shrink-0 fixed inset-y-0 left-0 z-50 transform transition-transform duration-300 ease-in-out md:translate-x-0 md:static md:transition-none ${
+          isOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
+      >
+        <div className="flex items-center gap-3 px-2 py-4 mb-2">
+          <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center shadow">
+            <span className="text-pink-600 font-bold text-sm">C</span>
+          </div>
+          <h2 className="text-white font-semibold text-lg tracking-wide">
+            Studio
+          </h2>
+        </div>
+
+        <div className="h-px bg-slate-700 mb-6" />
+
+        <nav className="flex flex-col gap-1">
+          {navItems.map(({ to, label, Icon }) => {
+            const active = location.pathname === to;
+            return (
+              <Link
+                key={to}
+                to={to}
+                onClick={() => setIsOpen(false)}
+                className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
+                  active
+                    ? "bg-white/10 text-white"
+                    : "text-slate-400 hover:text-white hover:bg-white/5"
+                }`}
+              >
+                <Icon />
+                {label}
+              </Link>
+            );
+          })}
+        </nav>
+      </aside>
+    </>
   );
 }

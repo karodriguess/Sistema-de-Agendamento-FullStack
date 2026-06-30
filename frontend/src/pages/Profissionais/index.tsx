@@ -56,7 +56,7 @@ export function Profissionais() {
     <div className="flex">
       <Sidebar />
 
-      <main className="flex-1 bg-slate-100 min-h-screen p-8">
+      <main className="flex-1 bg-slate-100 min-h-screen px-4 pb-4 pt-20 sm:px-6 sm:pb-6 sm:pt-20 md:p-8">
         <p className="text-xs text-slate-400 mb-1">Pages / Profissionais</p>
         <h1 className="text-2xl font-bold text-slate-800 mb-8">
           Profissionais
@@ -93,7 +93,7 @@ export function Profissionais() {
           </button>
         </form>
 
-        <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+        <div className="hidden md:block bg-white rounded-xl shadow-sm overflow-hidden">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-slate-100 bg-slate-50">
@@ -140,6 +140,36 @@ export function Profissionais() {
               ))}
             </tbody>
           </table>
+        </div>
+
+        <div className="md:hidden flex flex-col gap-3">
+          {profissionais.map((profissional) => (
+            <div
+              key={profissional._id}
+              className="bg-white rounded-xl shadow-sm p-4"
+            >
+              <p className="text-slate-700 font-medium">
+                {profissional.nome}
+              </p>
+              <p className="text-slate-500 text-sm mt-1">
+                {profissional.especialidade}
+              </p>
+              <div className="flex gap-5 mt-3 pt-3 border-t border-slate-100">
+                <button
+                  onClick={() => handleEdit(profissional)}
+                  className="text-xs font-medium text-slate-600 hover:text-slate-900 transition-colors cursor-pointer"
+                >
+                  Editar
+                </button>
+                <button
+                  onClick={() => handleDelete(profissional._id)}
+                  className="text-xs font-medium text-red-400 hover:text-red-600 transition-colors cursor-pointer"
+                >
+                  Excluir
+                </button>
+              </div>
+            </div>
+          ))}
         </div>
       </main>
     </div>

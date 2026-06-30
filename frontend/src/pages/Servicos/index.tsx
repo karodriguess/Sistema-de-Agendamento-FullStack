@@ -80,7 +80,7 @@ export function Servicos() {
     <div className="flex">
       <Sidebar />
 
-      <main className="flex-1 bg-slate-100 min-h-screen p-8">
+      <main className="flex-1 bg-slate-100 min-h-screen px-4 pb-4 pt-20 sm:px-6 sm:pb-6 sm:pt-20 md:p-8">
         <p className="text-xs text-slate-400 mb-1">Pages / Serviços</p>
         <h1 className="text-2xl font-bold text-slate-800 mb-8">Serviços</h1>
 
@@ -151,7 +151,7 @@ export function Servicos() {
           )}
         </form>
 
-        <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+        <div className="hidden md:block bg-white rounded-xl shadow-sm overflow-hidden">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-slate-100 bg-slate-50">
@@ -212,6 +212,37 @@ export function Servicos() {
               ))}
             </tbody>
           </table>
+        </div>
+
+        <div className="md:hidden flex flex-col gap-3">
+          {servicos.map((servico) => (
+            <div key={servico._id} className="bg-white rounded-xl shadow-sm p-4">
+              <div className="flex items-center justify-between gap-2">
+                <p className="text-slate-700 font-medium">{servico.nome}</p>
+                <p className="text-slate-500 text-sm">R$ {servico.preco}</p>
+              </div>
+              <p className="text-slate-500 text-sm mt-1">
+                {servico.profissionalId?.nome ?? (
+                  <span className="text-slate-300">—</span>
+                )}{" "}
+                · {servico.duracao} min
+              </p>
+              <div className="flex gap-3 mt-3 pt-3 border-t border-slate-100">
+                <button
+                  onClick={() => handleEdit(servico)}
+                  className="text-xs font-medium text-slate-600 hover:text-slate-900 transition-colors cursor-pointer"
+                >
+                  Editar
+                </button>
+                <button
+                  onClick={() => handleDelete(servico._id)}
+                  className="text-xs font-medium text-red-400 hover:text-red-600 transition-colors cursor-pointer"
+                >
+                  Excluir
+                </button>
+              </div>
+            </div>
+          ))}
         </div>
       </main>
     </div>

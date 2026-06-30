@@ -104,7 +104,7 @@ export function Agendamentos() {
     <div className="flex">
       <Sidebar />
 
-      <main className="flex-1 bg-slate-100 min-h-screen p-8">
+      <main className="flex-1 bg-slate-100 min-h-screen px-4 pb-4 pt-20 sm:px-6 sm:pb-6 sm:pt-20 md:p-8">
         <p className="text-xs text-slate-400 mb-1">Pages / Agendamentos</p>
 
         <h1 className="text-2xl font-bold text-slate-800 mb-8">Agendamentos</h1>
@@ -114,11 +114,11 @@ export function Agendamentos() {
             Filtros
           </h2>
 
-          <div className="flex flex-wrap items-center gap-3">
+          <div className="flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-3">
             <select
               value={filtroProf}
               onChange={(e) => setFiltroProf(e.target.value)}
-              className="border border-slate-200 rounded-lg px-4 py-2.5 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-300 bg-white"
+              className="w-full sm:w-auto border border-slate-200 rounded-lg px-4 py-2.5 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-300 bg-white"
             >
               <option value="todos">Todos os profissionais</option>
 
@@ -152,12 +152,18 @@ export function Agendamentos() {
                 setDataSelecionada(value);
                 setFiltroPeriodo(value ? "data" : "todos");
               }}
-              className="border border-slate-200 rounded-lg px-4 py-2.5 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-300 bg-white"
+              className="w-full sm:w-auto border border-slate-200 rounded-lg px-4 py-2.5 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-300 bg-white"
             />
           </div>
         </div>
 
-        <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+        <div
+          className={
+            loading
+              ? "bg-white rounded-xl shadow-sm overflow-hidden"
+              : "hidden md:block bg-white rounded-xl shadow-sm overflow-hidden"
+          }
+        >
           {loading ? (
             <p className="px-6 py-8 text-sm text-slate-500">Carregando...</p>
           ) : (
@@ -251,6 +257,72 @@ export function Agendamentos() {
             </table>
           )}
         </div>
+
+        {!loading && (
+          <div className="md:hidden flex flex-col gap-3">
+            {filtrados.length === 0 ? (
+              <div className="bg-white rounded-xl shadow-sm px-6 py-10 text-center text-slate-400 text-sm">
+                Nenhum agendamento encontrado.
+              </div>
+            ) : (
+              filtrados.map((a) => (
+                <div key={a._id} className="bg-white rounded-xl shadow-sm p-4">
+                  <div className="flex items-start justify-between gap-3">
+                    <p className="font-medium text-slate-700">
+                      {a.clienteId?.nome ?? "-"}
+                    </p>
+                    <span
+                      className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold whitespace-nowrap ${
+                        statusStyles[a.status] ?? "bg-slate-100 text-slate-700"
+                      }`}
+                    >
+                      <span className="w-2 h-2 rounded-full bg-current opacity-70"></span>
+                      {statusLabels[a.status] ?? a.status}
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-x-3 gap-y-3 mt-4">
+                    <div>
+                      <p className="text-xs font-semibold text-slate-400 uppercase tracking-wide">
+                        Telefone
+                      </p>
+                      <p className="text-slate-600 text-sm mt-0.5">
+                        {a.clienteId?.telefone ?? "-"}
+                      </p>
+                    </div>
+
+                    <div>
+                      <p className="text-xs font-semibold text-slate-400 uppercase tracking-wide">
+                        Serviço
+                      </p>
+                      <p className="text-slate-600 text-sm mt-0.5">
+                        {a.servicoId?.nome ?? "-"}
+                      </p>
+                    </div>
+
+                    <div>
+                      <p className="text-xs font-semibold text-slate-400 uppercase tracking-wide">
+                        Profissional
+                      </p>
+                      <p className="text-slate-600 text-sm mt-0.5">
+                        {a.profissionalId?.nome ?? "-"}
+                      </p>
+                    </div>
+
+                    <div>
+                      <p className="text-xs font-semibold text-slate-400 uppercase tracking-wide">
+                        Data
+                      </p>
+                      <p className="text-slate-600 text-sm mt-0.5">
+                        {formatDate(a.data)} · {a.horario}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        )}
       </main>
     </div>
   );
