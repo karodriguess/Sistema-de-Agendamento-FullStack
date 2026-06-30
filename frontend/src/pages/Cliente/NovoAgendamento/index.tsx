@@ -1,10 +1,15 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "../../../hooks/useAuth";
 import { getProfissionais } from "../../../services/profissionais";
 import { getServicos } from "../../../services/servicos";
 import { getDisponibilidades } from "../../../services/disponibilidades";
-import { criarAgendamento } from "../../../services/agendamentos";
+import {
+  criarAgendamento,
+  getHorariosDisponiveis,
+  getMeusAgendamentos,
+  remarcarAgendamento,
+} from "../../../services/agendamentos";
 
 interface Profissional {
   _id: string;
@@ -84,6 +89,8 @@ const ETAPAS = ["Profissional", "Serviço", "Data", "Horário", "Confirmação"]
 export function NovoAgendamento() {
   const { signOut } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const remarcarId = searchParams.get("remarcar");
 
   const [step, setStep] = useState(1);
 
@@ -92,6 +99,9 @@ export function NovoAgendamento() {
   const [horariosPorData, setHorariosPorData] = useState<
     Record<string, string[]>
   >({});
+  const [horariosDisponiveis, setHorariosDisponiveis] = useState<string[]>(
+    []
+  );
 
   const [profissional, setProfissional] = useState<Profissional | null>(null);
   const [servico, setServico] = useState<Servico | null>(null);
@@ -106,6 +116,8 @@ export function NovoAgendamento() {
   const [loadingProf, setLoadingProf] = useState(true);
   const [loadingServ, setLoadingServ] = useState(false);
   const [loadingDisp, setLoadingDisp] = useState(false);
+  const [loadingHorarios, setLoadingHorarios] = useState(false);
+  const [carregandoRemarcar, setCarregandoRemarcar] = useState(false);
   const [confirmando, setConfirmando] = useState(false);
   const [sucesso, setSucesso] = useState(false);
   const [erro, setErro] = useState<string | null>(null);
@@ -115,6 +127,55 @@ export function NovoAgendamento() {
       .then(setProfissionais)
       .finally(() => setLoadingProf(false));
   }, []);
+
+  // Pré-preencher quando modo remarcar
+  useEffect(() => {
+    if (!remarcarId) return;
+
+    async function preencherRemarcar() {
+      setCarregandoRemarcar(true);
+      try {
+        const agendamentos = await getMeusAgendamentos();
+        const agendamento = agendamentos.find(
+          (a: any) => a._id === remarcarId
+        );
+        if (!agendamento) return;
+
+        const prof = agendamento.profissionalId;
+        const serv = agendamento.servicoId;
+
+        const profissionalPreenchido: Profissional = {
+          _id: prof._id,
+          nome: prof.nome,
+          especialidade: prof.especialidade,
+        };
+
+        const servicoPreenchido: Servico = {
+          _id: serv._id,
+          nome: serv.nome,
+          preco: serv.preco,
+          duracao: serv.duracao,
+          descricao: "",
+        };
+
+        setProfissional(profissionalPreenchido);
+        setServico(servicoPreenchido);
+
+        setLoadingServ(true);
+        getServicos(prof._id)
+          .then(setServicos)
+          .finally(() => setLoadingServ(false));
+
+        setStep(3);
+      } catch {
+        setErro("Erro ao carregar agendamento para remarcação.");
+      } finally {
+        setCarregandoRemarcar(false);
+      }
+    }
+
+    preencherRemarcar();
+  }, [remarcarId]);
 
   useEffect(() => {
     if (!profissional) return;
@@ -145,6 +206,7 @@ export function NovoAgendamento() {
     setData(null);
     setHorario(null);
     setHorariosPorData({});
+    setHorariosDisponiveis([]);
     setSucesso(false);
     setErro(null);
     setServicos([]);
@@ -162,10 +224,21 @@ export function NovoAgendamento() {
     setStep(3);
   }
 
-  function selecionarData(dateKey: string) {
+  async function selecionarData(dateKey: string) {
     setData(dateKey);
     setHorario(null);
     setStep(4);
+    if (!profissional) return;
+    setLoadingHorarios(true);
+    try {
+      const horarios = await getHorariosDisponiveis(
+        profissional._id,
+        dateKey
+      );
+      setHorariosDisponiveis(horarios);
+    } finally {
+      setLoadingHorarios(false);
+    }
   }
 
   function selecionarHorario(h: string) {
@@ -189,12 +262,16 @@ export function NovoAgendamento() {
     setConfirmando(true);
     setErro(null);
     try {
-      await criarAgendamento({
-        profissionalId: profissional._id,
-        servicoId: servico._id,
-        data,
-        horario,
-      });
+      if (remarcarId) {
+        await remarcarAgendamento(remarcarId, data, horario);
+      } else {
+        await criarAgendamento({
+          profissionalId: profissional._id,
+          servicoId: servico._id,
+          data,
+          horario,
+        });
+      }
       setSucesso(true);
     } catch (e: any) {
       setErro(
@@ -211,6 +288,7 @@ export function NovoAgendamento() {
     setData(null);
     setHorario(null);
     setHorariosPorData({});
+    setHorariosDisponiveis([]);
     setSucesso(false);
     setErro(null);
     setStep(1);
@@ -221,12 +299,22 @@ export function NovoAgendamento() {
   const hojeKey = toYYYYMMDD(hoje);
   const diasDoMes = getDiasDoMes(mesAtual.getFullYear(), mesAtual.getMonth());
 
+  if (carregandoRemarcar) {
+    return (
+      <div className="min-h-screen bg-slate-100 flex items-center justify-center">
+        <p className="text-sm text-slate-400">Carregando agendamento...</p>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-slate-100 flex flex-col">
       {/* Header */}
       <header className="bg-slate-900 text-white px-6  flex items-center justify-between shadow-md">
         <button
-          onClick={() => navigate("/meus-agendamentos", {})}
+          onClick={() =>
+            navigate(remarcarId ? "/ver-agendamentos" : "/meus-agendamentos")
+          }
           className="texte-base font-semibold cursor-pointer"
         >
           <div className="flex items-center gap-3 p-3 mb-2">
@@ -388,13 +476,13 @@ export function NovoAgendamento() {
           {step === 3 && (
             <section>
               <button
-                onClick={() => voltarPara(2)}
+                onClick={() => voltarPara(remarcarId ? 3 : 2)}
                 className="text-xs text-slate-400 hover:text-slate-700 mb-4 flex items-center gap-1 transition-colors cursor-pointer"
               >
                 ← Voltar
               </button>
               <h2 className="text-lg font-bold text-slate-800 mb-1">
-                Escolha a data
+                {remarcarId ? "Escolha a nova data" : "Escolha a data"}
               </h2>
               <p className="text-sm text-slate-500 mb-5">
                 Serviço:{" "}
@@ -499,20 +587,24 @@ export function NovoAgendamento() {
                 ← Voltar
               </button>
               <h2 className="text-lg font-bold text-slate-800 mb-1">
-                Escolha o horário
+                {remarcarId ? "Escolha o novo horário" : "Escolha o horário"}
               </h2>
               <p className="text-sm text-slate-500 mb-5">
                 {formatarData(data)}
               </p>
 
               <div className="bg-white rounded-xl shadow-sm p-6">
-                {(horariosPorData[data]?.length ?? 0) === 0 ? (
+                {loadingHorarios ? (
+                  <div className="text-center text-slate-400 text-sm py-8">
+                    Carregando horários disponíveis...
+                  </div>
+                ) : horariosDisponiveis.length === 0 ? (
                   <p className="text-sm text-slate-400 text-center py-8">
                     Nenhum horário disponível para este dia.
                   </p>
                 ) : (
                   <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
-                    {horariosPorData[data].map((h) => (
+                    {horariosDisponiveis.map((h) => (
                       <button
                         key={h}
                         onClick={() => selecionarHorario(h)}
@@ -539,7 +631,9 @@ export function NovoAgendamento() {
                     ← Voltar
                   </button>
                   <h2 className="text-lg font-bold text-slate-800 mb-1">
-                    Confirme o agendamento
+                    {remarcarId
+                      ? "Confirme a remarcação"
+                      : "Confirme o agendamento"}
                   </h2>
                   <p className="text-sm text-slate-500 mb-5">
                     Revise as informações antes de confirmar.
@@ -591,10 +685,37 @@ export function NovoAgendamento() {
                     disabled={confirmando}
                     className="w-full bg-slate-800 hover:bg-slate-900 disabled:opacity-60 text-white text-sm font-medium py-3 rounded-xl transition-colors cursor-pointer"
                   >
-                    {confirmando ? "Confirmando..." : "Confirmar Agendamento"}
+                    {confirmando
+                      ? "Confirmando..."
+                      : remarcarId
+                      ? "Confirmar Remarcação"
+                      : "Confirmar Agendamento"}
                   </button>
                 </>
+              ) : remarcarId ? (
+                /* Sucesso - modo remarcação */
+                <div className="text-center gap-4 py-12">
+                  <div className="w-16 h-16 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 text-2xl mx-auto mb-4">
+                    ✓
+                  </div>
+                  <h2 className="text-xl font-bold text-slate-800 mb-2">
+                    Remarcação confirmada!
+                  </h2>
+                  <p className="text-sm text-slate-500 mb-1">
+                    {profissional?.nome} · {servico?.nome}
+                  </p>
+                  <p className="text-sm text-slate-500 mb-8">
+                    {data ? formatarData(data) : ""} às {horario}
+                  </p>
+                  <button
+                    onClick={() => navigate("/ver-agendamentos")}
+                    className="text-sm bg-emerald-800 hover:bg-emerald-700 text-white px-6 py-2.5 rounded-xl transition-colors cursor-pointer"
+                  >
+                    Ver meus agendamentos
+                  </button>
+                </div>
               ) : (
+                /* Sucesso - novo agendamento */
                 <div className="text-center gap-4 py-12">
                   <div className="w-16 h-16 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 text-2xl mx-auto mb-4">
                     ✓

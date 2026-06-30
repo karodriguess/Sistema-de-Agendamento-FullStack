@@ -8,7 +8,7 @@ import { Servicos } from "../pages/Servicos";
 import { Agendamentos } from "../pages/Agendamentos";
 import { MeusAgendamentos } from "../pages/Cliente/MeusAgendamentos";
 import { VerAgendamentos } from "../pages/Cliente/VerAgendamentos";
-import { NovoAgendamento } from "../pages/NovoAgendamento";
+import { NovoAgendamento } from "../pages/Cliente/NovoAgendamento";
 import { Disponibilidades } from "../pages/Disponibilidades";
 import { ProtectedRoute } from "../components/ProtectedRoute";
 

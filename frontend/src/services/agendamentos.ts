@@ -10,6 +10,16 @@ export async function getMeusAgendamentos() {
   return response.data;
 }
 
+export async function getHorariosDisponiveis(
+  profissionalId: string,
+  data: string
+) {
+  const response = await api.get(
+    `/Agendamentos/disponiveis?profissionalId=${profissionalId}&data=${data}`
+  );
+  return response.data.horarios as string[];
+}
+
 export async function criarAgendamento(dados: {
   profissionalId: string;
   servicoId: string;
