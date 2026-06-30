@@ -1,5 +1,5 @@
 import { connectDB } from "../../../lib/mongodb";
-import Agendamento from "../../../models/Agendamento";
+import Agendamento, { STATUS_CANCELADOS } from "../../../models/Agendamento";
 import Servico from "../../../models/Servico";
 import Profissional from "../../../models/Profissional";
 import User from "../../../models/User";
@@ -48,7 +48,7 @@ export async function POST(req) {
       data: body.data,
       horario: body.horario,
       status: {
-        $nin: ["cancelado", "cancelado_cliente"],
+        $nin: STATUS_CANCELADOS,
       },
     });
 

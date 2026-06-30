@@ -1,5 +1,7 @@
 import { connectDB } from "../../../../../lib/mongodb";
-import Agendamento from "../../../../../models/Agendamento";
+import Agendamento, {
+  STATUS_CANCELADOS,
+} from "../../../../../models/Agendamento";
 import jwt from "jsonwebtoken";
 
 export async function PATCH(req, { params }) {
@@ -45,7 +47,7 @@ export async function PATCH(req, { params }) {
       data: body.data,
       horario: body.horario,
       status: {
-        $nin: ["cancelado", "cancelado_cliente"],
+        $nin: STATUS_CANCELADOS,
       },
     });
 

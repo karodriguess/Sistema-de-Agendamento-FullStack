@@ -1,5 +1,7 @@
 import mongoose from "mongoose";
 
+export const STATUS_CANCELADOS = ["cancelado", "cancelado_cliente"];
+
 const AgendamentoSchema = new mongoose.Schema(
   {
     clienteId: {
