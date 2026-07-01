@@ -272,7 +272,7 @@ JWT_SECRET=sua_chave_secreta_aqui
 
 ## Status do Projeto
 
-> Em desenvolvimento — novas funcionalidades sendo adicionadas continuamente.
+> Novas funcionalidades sendo adicionadas continuamente.
 
 | Módulo                           | Status             |
 | -------------------------------- | ------------------ |
@@ -282,10 +282,6 @@ JWT_SECRET=sua_chave_secreta_aqui
 | Gerenciamento de Serviços        | Concluído          |
 | Agendamentos (listagem admin)    | Concluído |
 | Disponibilidades                 | Concluído |
-| Meus Agendamento (Cliente)       | Em desenvolvimento|
+| Meus Agendamento (Cliente)       | Concluído |
 
 ---
-
-## Autora
-
-Feito por **Kariny Rodrigues** — [karinyrodrigues2004@gmail.com](mailto:karinyrodrigues2004@gmail.com)
